@@ -1,3 +1,9 @@
 numpy==2.2.6
 opencv-python==4.12.0.88
 trossen_arm==1.9.0
+
+# Optional: ML-based whiteboard detection (recommended)
+# Install with: python setup_roboflow.py
+# Or: pip install roboflow supervision
+roboflow>=1.1.0
+supervision>=0.16.0
