@@ -3,6 +3,9 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# models
+marker_detector.pth
+
 # pycharm
 .idea
 
