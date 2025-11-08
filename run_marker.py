@@ -5,7 +5,7 @@ from torchvision.models.detection import FasterRCNN_ResNet50_FPN_Weights
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 import cv2
 import numpy as np
-
+import time
 # -------------------------------------------------------------------
 # 1. Model Definition (Must be the same as in your training script)
 # -------------------------------------------------------------------
@@ -46,7 +46,7 @@ def run_webcam_detector():
     CLASS_NAMES = ['__background__', 'capped_marker']
     
     # Confidence threshold: only show detections with a score > 0.5
-    CONFIDENCE_THRESHOLD = 0.5
+    CONFIDENCE_THRESHOLD = 0.4
     
     # Colors for drawing
     BOX_COLOR = (0, 255, 0) # Green
@@ -140,6 +140,7 @@ def run_webcam_detector():
         # --- 6. Display the Frame ---
         cv2.imshow('Marker Detection (Press "q" to quit)', frame)
 
+        time.sleep(0.5)
         # Check for 'q' key press to exit
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
