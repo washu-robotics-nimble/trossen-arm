@@ -52,8 +52,8 @@ if __name__=='__main__':
     print("Configuring the drivers...")
     driver.configure(
         trossen_arm.Model.wxai_v0,
-        trossen_arm.StandardEndEffector.wxai_v0_base,
-        "192.168.1.2",
+        trossen_arm.StandardEndEffector.wxai_v0_leader,
+        "192.168.2.2",
         False
     )
 
