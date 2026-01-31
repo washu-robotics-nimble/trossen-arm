@@ -53,7 +53,7 @@ if __name__=='__main__':
     driver.configure(
         trossen_arm.Model.wxai_v0,
         trossen_arm.StandardEndEffector.wxai_v0_base,
-        "192.168.1.2",
+        "192.168.2.2",
         False
     )
 

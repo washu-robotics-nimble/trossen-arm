@@ -1,0 +1,21 @@
+# Robot configuration
+robot:
+  model: wxai_v0
+  end_effector: wxai_v0_leader
+  ip: "192.168.2.2"
+  debug: false
+
+# Camera configuration
+camera:
+  device_id: 0
+  width: 1280
+  height: 720
+  backend: "AVFOUNDATION"  # AVFOUNDATION (macOS), DSHOW (Windows), V4L2 (Linux)
+
+# Detection configuration
+detection:
+  model_path: "learning/models/marker_detection/best.pt"
+  confidence_threshold: 0.25
+  image_size: 640
+  save_predictions: true
+  prediction_interval: 10  # seconds
