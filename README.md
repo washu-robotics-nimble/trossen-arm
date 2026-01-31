@@ -25,15 +25,28 @@ trossen-arm/
 └── config/               # Configuration files
 ```
 
-## Setup
+## Setup (MAC OS and Linux)
 
 1. Create and activate virtual environment:
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate
 ```
 
 2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+## Setup (Windows)
+1. Install [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
+2. Open up a WSL terminal 
+3. Create and activate virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate
+```
+4. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
@@ -48,7 +61,7 @@ python perception/yolo/live_detection.py --conf 0.5 --imgsz 1280
 
 ### Robot Control (simple)
 ```bash
-python control/simple_move.py
+python control/scripts/simple_move.py
 ```
 
 ### Model Training
