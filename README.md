@@ -96,6 +96,12 @@ Trained models are stored in `learning/models/`:
 - Logitech Camera (?)
 - IP: 192.168.2.2 (configurable)
 
+## Documentation
+
+Install a LaTeX distribition on your computer, and the LaTeX Workshop extension (on VSCode).
+
+The `/docs` folder will contain all documentation for the project. The main content is the technical design document, which can be edited in the file `/docs/tdd.tex` and viewed in PDF format in the file `/docs/tdd.pdf`.
+
 ## References
 
 - [Trossen Robotics WidowX AI](https://www.trossenrobotics.com/widowx-ai)

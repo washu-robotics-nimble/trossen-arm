@@ -1,0 +1,263 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+
+%----------------------------
+% Title and Formatting
+%----------------------------
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+\setlist{nosep}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Technical Design Document}
+\lhead{\leftmark}
+\cfoot{\thepage}
+
+\title{\textbf{Technical Design Document}\\[0.5em]\large Nimbler Sentences With Reinforcement Learning}
+
+\author{Nimble @ WashU Robotics \\ \texttt{washurobotics@gmail.com}}
+
+\author{
+    \\
+    Tyler Dinh, Lauren Gayle, Anling Zhu, Tenzin Dukdak, \\
+    Billy Zhao, Noah Wolk, Mark Seidel, Horlasy Demakpor \\[0.3em]
+    Software Team \\[0.2em]
+    \texttt{\{dinh.t, gayle.l, anling, dtenzin, billy.z,} \\
+    \texttt{n.j.wolk, m.m.seidel, horlasy.d\}@wustl.edu} \\\\
+    Elizabeth Joseph, Alexis Luna, Yuxuan Shen, \\
+    Kyle Okui, Gabe Minton \\[0.3em]
+    Integration Team \\[0.2em]
+    \texttt{\{elizabeth.j, alexis.l, notsure, k.okui, g.m.minton\}@wustl.edu}\\\\
+}
+\date{\today}
+
+%----------------------------
+\begin{document}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+%----------------------------
+\section{Overview}
+%Describe the purpose of this document and its intended audience.  
+%Mention any prerequisite knowledge required before reading.  
+%Specify whether it targets a technical or non-technical audience.
+The purpose of this document is to present the technical design of a system that enables a robotic arm to learn and perform handwriting tasks for basic sentences using reinforcement learning (RL). \\\\
+This document is intended for a technical audience with a background in computer science, robotics, or machine learning. Non-technical readers may find high-level summaries useful but should refer to supplementary documentation at the end of this document for background on the underlying mechanisms employed.
+\newpage
+%----------------------------
+\section{Problem}
+
+Current robot arms used for writing tasks operate with \textbf{static, pre-programmed motions}. Each specific writing task---whether it's writing a particular sentence, drawing a shape, or creating a signature---requires its own custom motion program. This approach has several critical limitations:
+
+\subsection{The Core Problem}
+
+When a robot needs to write something new, engineers must:
+\begin{enumerate}
+    \item Manually program the exact trajectory for each letter or word.
+    \item Hard-code the sequence of movements.
+    \item Test, refine, and repeat this entire process for every new writing task.
+\end{enumerate}
+
+A \textbf{dynamic robot arm} that can generalize its writing capabilities would:
+\begin{itemize}
+    \item \textbf{Scale efficiently}: Write any arbitrary text without reprogramming.
+    \item \textbf{Adapt to variations}: Handle different sizes and styles of text.
+    \item \textbf{Learn from examples}: Improve through demonstration rather than explicit programming.
+\end{itemize}
+
+\subsection{The Core Goal}
+
+The goal is to develop a robot writing system that can:
+\begin{itemize}
+    \item Accept arbitrary text input (like ``Hello World'' or even more arbitrary, like ''Write me a haiku.'')
+    \item Dynamically generate appropriate writing motions.
+    \item Execute smooth, legible handwriting without pre-programmed trajectories for each specific string.
+\end{itemize}
+\newpage
+%----------------------------
+\section{Tenets}
+TODO!
+List the key principles or beliefs guiding the design decisions.  
+Tenets help align teams and establish common ground on critical design questions.
+talk to team about this
+\newpage
+%----------------------------
+\section{Requirements}
+TODO! Describe all requirements imposed by the problem.  
+Write from the end-user’s perspective. Include user stories or use cases.
+
+\subsection*{Example Use Cases}
+\begin{itemize}
+  \item As a x, I want to y.
+  \item As a x, I want y.
+\end{itemize}
+%----------------------------
+\subsection{Out of Scope}
+TODO! List what is explicitly out of scope to avoid misunderstandings.
+
+%----------------------------
+\subsection{Success Criteria}
+TODO! Describe how success will be measured once the solution is in production.  
+Include measurable metrics such as performance, scalability, or cost efficiency.
+
+\subsection*{Example Metrics}
+\begin{itemize}
+  \item Time-to-market reduced by 90\%.
+  \item Supports 10,000 users with 100ms P90 latency.
+  \item It can write sentences in English legibly with X\% accuracy.
+\end{itemize}
+\newpage
+%----------------------------
+\section{Architecture}
+Describe the architecture of the proposed solution using text, diagrams, and bullet points.  
+Explain why this design was chosen.
+
+25-26 Architecture
+
+VLA: NORA 1.5
+Data Collection Framework: LeRobot
+Arm: WidowX AI Trossen Base
+CV: OpenCV + Logitech
+Additional VLM/LLM for Data Preprocessing: Local Qwen3-4B instance,
+Programming Languages: Mainly Python, JSON for data.
+Compute: RoboServer
+
+\subsection{High-Level Overview (HLD)}
+List all logical system components:
+\begin{itemize}
+  \item comp1
+  \item comp2
+  \item comp3
+  \item comp4
+  \item comp5
+\end{itemize}
+
+Include diagrams as needed:
+\begin{center}
+%\includegraphics[width=0.8\textwidth]{architecture-diagram.png}
+\end{center}
+
+\subsection{API Design}
+List all APIs used for interaction between users or services.  
+Include HTTP methods, payloads, versions, and example requests/responses.  
+Discuss future evolution of the APIs.
+
+\subsection{Data Storage and Model}
+Describe the data model and database choice.  
+Estimate data volume, forecast growth, and justify scalability.  
+Discuss data pipelines, ingestion, and pre-processing if applicable.
+
+\subsection{Application / Component Level Design (LLD)}
+Provide detailed design of each system component, including data flow and control flow diagrams.
+
+USE DRAW.IO for this (can install on your computer)
+
+\newpage
+%----------------------------
+\section{Dependencies}
+List external and internal dependencies.  
+Document assumptions and risks associated with these dependencies.
+%----------------------------
+\subsection{Design Alternatives Considered}
+Discuss alternative designs evaluated.  
+Provide a comparison table highlighting trade-offs.
+
+\begin{longtable}{@{}p{3cm}p{5cm}p{5cm}@{}}
+\toprule
+\textbf{Option} & \textbf{Pros} & \textbf{Cons} \\ \midrule
+Option A & Scalable, cost-efficient & Complex to maintain \\
+Option B & Easy to implement & Limited scalability \\ \bottomrule
+\end{longtable}
+
+\newpage
+%----------------------------
+\section{Cost Analysis}
+Estimate infrastructure and operational costs.  
+Plan for future growth and scalability.
+
+\newpage
+%----------------------------
+\section{Failures and Risks}
+Discuss potential system failures such as:
+\begin{itemize}
+  \item Dependency failures
+  \item Traffic overflow
+  \item Performance degradation
+  \item Logic bugs
+\end{itemize}
+
+Identify risks such as external dependencies or resource limitations.  
+Include potential mitigation strategies.
+
+\newpage
+%----------------------------
+\section{Non-Functional Requirements}
+Cover scalability, availability, maintainability, reliability, latency, and security.
+
+\subsection{Scalability}
+Expected users, transactions, and data volume.
+
+\subsection{Latency and Availability}
+Define SLAs (e.g., P99, P50 latency targets).
+
+\subsection{Maintainability}
+Explain maintenance expectations and ownership.
+
+\subsection{Security}
+Describe security measures and required compliance levels.
+
+\newpage
+%----------------------------
+\section{Testing and Observability}
+Outline strategies for testing, monitoring, and alerting.
+
+\subsection{Testing}
+Explain testing approach: unit, integration, A/B, or stress tests.
+
+\subsection{Metrics and Alarms}
+List key performance metrics, dashboards, and alert configurations.
+
+\newpage
+%----------------------------
+\section{Future Improvements}
+List planned features or improvements for future releases.
+
+\newpage
+%----------------------------
+\section{FAQs}
+Include frequently asked questions and their answers.
+
+question?
+answer here
+
+\newpage
+%----------------------------
+\appendix
+\section{Appendix A: Subtitle (Optional)}
+Include detailed technical analysis or supporting data.
+
+\newpage
+%----------------------------
+\section{Glossary}
+\begin{description}
+  \item[ex1] example definition
+\end{description}
+
+\newpage
+%----------------------------
+\section{References}
+\begin{itemize}
+  \item Service 1: \url{https://example.com}
+\end{itemize}
+
+\end{document}
