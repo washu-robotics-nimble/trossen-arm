@@ -98,7 +98,7 @@ Trained models are stored in `learning/models/`:
 
 ## Documentation
 
-Install a LaTeX distribition on your computer, and the LaTeX Workshop extension (on VSCode).
+Install a LaTeX distribution on your computer, and the LaTeX Workshop extension (on VSCode).
 
 The `/docs` folder will contain all documentation for the project. The main content is the technical design document, which can be edited in the file `/docs/tdd.tex` and viewed in PDF format in the file `/docs/tdd.pdf`.
 
