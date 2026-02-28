@@ -1,0 +1,30 @@
+# Core ML / inference
+torch>=2.6.0
+torchvision>=0.21.0
+transformers>=4.54.0
+accelerate>=1.10.0
+diffusers>=0.36.0
+einops>=0.8.0
+safetensors>=0.7.0
+
+# NORA dependencies
+qwen-vl-utils>=0.0.14
+lerobot>=0.3.3
+dlimp @ git+https://github.com/moojink/dlimp_openvla@040105d256bd28866cc6620621a3d5f7b6b91b46
+datasets>=3.6.0
+draccus>=0.10.0
+
+# Vision / camera
+opencv-python>=4.11.0
+ultralytics>=8.4.0
+pillow>=12.0.0
+
+# Robotics / kinematics
+trossen_arm==1.7.8
+ikpy>=3.4.0
+scipy>=1.15.0
+numpy==1.26.4
+
+# Utilities
+tqdm>=4.67.0
+huggingface_hub>=0.36.0
