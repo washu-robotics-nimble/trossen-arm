@@ -1,5 +1,0 @@
-numpy==2.3.3
-trossen_arm==1.7.8
-ultralytics>=8.0.0
-opencv-python>=4.8.0
-PyYAML>=6.0
