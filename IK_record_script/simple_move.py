@@ -53,7 +53,7 @@ if __name__=='__main__':
     j2 = np.pi/2 # second joint
     j3 = 0.0 # wrist pitch (third joint lift if +)
     j4 = 0.0 # wrist roll (third joint rotate horizonttaly to right if +)
-    j5 = 0.0 # wrist rotate (third joint rotate vertically to right if +)
+    j5 = 0.0 # gripper rotate clockwise if + 
 
     arm_motion = [j0,j1,j2,j3,j4,j5]
 
@@ -77,8 +77,6 @@ if __name__=='__main__':
     driver.set_gripper_mode(trossen_arm.Mode.external_effort)
     driver.set_gripper_external_effort(-20.0, 5.0, True)
     print(driver.get_positions()[-1])
-
-    sys.exit()
     
     print("Moving the arm...")
     driver.set_arm_modes(trossen_arm.Mode.position)
@@ -87,6 +85,8 @@ if __name__=='__main__':
         5.0,
         True
     )
+
+    sys.exit()
 
     print("Closing the gripper...")
     driver.set_gripper_mode(trossen_arm.Mode.external_effort)
