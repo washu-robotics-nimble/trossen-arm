@@ -7,36 +7,10 @@ Fine-tuning NORA 1.5 (Vision-Language-Action model) on Trossen WidowX AI robot d
 
 ## Folders
 
+- **`Trossen_Full_Loop/`** — Real-arm CLI pick-and-place loop (IK + safety checks + keyframe recording/replay)
 - **`nimble_trossen_isaac/`** — Isaac Sim pick-and-place simulation + LeRobot dataset recording (uses `env_isaaclab` env)
 - **`nora-1.5-main/`** — NORA 1.5 training, inference, and normalization stats (uses `trossen_nora` env, training requires 4090)
 - **`nora_trossenarm/`** — Real robot scripts for Trossen WidowX AI (camera inference, marker pickup, YOLO detection)
-
-## Two Conda Environments
-
-| Environment | Purpose |
-|---|---|
-| `env_isaaclab` | Simulation & data collection (Isaac Sim + Isaac Lab + LeRobot) |
-| `trossen_nora` | Training & norm stats (transformers==4.54.0 + LeRobot) |
-
-They are separate because Isaac Sim and NORA training have conflicting dependencies.
-
-## Quick Start
-
-```bash
-# 1. Collect data in simulation
-conda activate env_isaaclab
-cd nimble_trossen_isaac
-python nimble_trossen.py
-
-# 2. Compute normalization stats
-conda activate trossen_nora
-cd nora-1.5-main/utils
-python compute_norm_stats.py --dataset_path /path/to/dataset --delta_transform
-
-# 3. Train NORA 1.5 (4090 only)
-cd nora-1.5-main/training/lerobot
-WANDB_MODE=disabled accelerate launch train_lerobot.py
-```
 
 ## Trossen_Full_Loop (CLI)
 
@@ -46,7 +20,7 @@ Interactive command-line loop for real-arm pick-and-place. Each waypoint you typ
 ### Run
 
 ```bash
-cd nimble_trossen_isaac/Trossen_Full_Loop
+cd Trossen_Full_Loop
 python main.py
 ```
 
@@ -75,6 +49,33 @@ python replay.py <task_name>     # replays that specific recording
   (matplotlib window — requires a display; not for headless / SSH)
 
 ---
+
+## Two Conda Environments
+
+| Environment | Purpose |
+|---|---|
+| `env_isaaclab` | Simulation & data collection (Isaac Sim + Isaac Lab + LeRobot) |
+| `trossen_nora` | Training & norm stats (transformers==4.54.0 + LeRobot) |
+
+They are separate because Isaac Sim and NORA training have conflicting dependencies.
+
+## Quick Start
+
+```bash
+# 1. Collect data in simulation
+conda activate env_isaaclab
+cd nimble_trossen_isaac
+python nimble_trossen.py
+
+# 2. Compute normalization stats
+conda activate trossen_nora
+cd nora-1.5-main/utils
+python compute_norm_stats.py --dataset_path /path/to/dataset --delta_transform
+
+# 3. Train NORA 1.5 (4090 only)
+cd nora-1.5-main/training/lerobot
+WANDB_MODE=disabled accelerate launch train_lerobot.py
+```
 
 ## Reference
 
