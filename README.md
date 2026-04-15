@@ -1,8 +1,4 @@
 # Nimble Trossen NORA Pipeline
-
-> 📹 **Demo video** (trajectory recording): [Google Drive](https://drive.google.com/drive/folders/1Tns9Wm0CSOvfmWFekixoPJ7-kg43G-dX?usp=share_link)
-
-
 Fine-tuning NORA 1.5 (Vision-Language-Action model) on Trossen WidowX AI robot data collected in NVIDIA Isaac Sim.
 
 ## Folders
@@ -13,9 +9,11 @@ Fine-tuning NORA 1.5 (Vision-Language-Action model) on Trossen WidowX AI robot d
 - **`nora_trossenarm/`** — Real robot scripts for Trossen WidowX AI (camera inference, marker pickup, YOLO detection)
 
 ## Trossen_Full_Loop (CLI)
+> 📹 **Demo video** (trajectory recording): [Google Drive](https://drive.google.com/drive/folders/1Tns9Wm0CSOvfmWFekixoPJ7-kg43G-dX?usp=share_link)
 
 Interactive command-line loop for real-arm pick-and-place. Each waypoint you type a line like
 `0.18, 0.10, 0.06, 1` (x, y, z in meters + gripper 1=open/0=closed).
+
 
 ### Run
 
