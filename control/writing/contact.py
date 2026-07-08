@@ -36,7 +36,7 @@ class ContactError(RuntimeError):
     pass
 
 
-def _mover(driver, plane, uv, target_dir, step, speed=0.6, min_dur=0.3):
+def _mover(driver, plane, uv, target_dir, _step, speed=0.6, min_dur=0.3):
     """Return a function that moves the tip to a given normal offset.
 
     The move duration is scaled to the actual joint distance travelled, so the
