@@ -125,9 +125,18 @@ def main():
         print("Run control/scripts/collect_dataset.py first.")
         sys.exit(1)
 
-    ep_dirs = sorted(d for d in raw_dir.iterdir() if d.is_dir() and d.name.startswith("episode_"))
+    candidates = sorted(d for d in raw_dir.iterdir()
+                        if d.is_dir() and d.name.startswith("episode_"))
+    # A discarded/interrupted episode leaves a directory with frames/ but no
+    # metadata.json; skip those instead of crashing the whole build.
+    ep_dirs = []
+    for d in candidates:
+        if (d / "metadata.json").exists() and (d / "observations.npy").exists():
+            ep_dirs.append(d)
+        else:
+            print(f"  Skipping incomplete episode dir (no metadata): {d.name}")
     if not ep_dirs:
-        print(f"No episodes found in {raw_dir}.")
+        print(f"No complete episodes found in {raw_dir}.")
         sys.exit(1)
 
     print(f"Found {len(ep_dirs)} episodes in {raw_dir}.")

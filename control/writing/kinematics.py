@@ -139,7 +139,11 @@ def inverse_kinematics(
 
     e = _pose_error(q, target_pos, target_dir, tip_length, dir_weight)
     pos_err = float(np.linalg.norm(e[:3]))
-    return q, pos_err < tol, pos_err
+    # Match the in-loop convergence test: BOTH position and orientation must
+    # be satisfied. Reporting success on position alone would accept a
+    # solution whose marker direction is far off (wrong pen tilt).
+    converged = pos_err < tol and float(np.linalg.norm(e)) < 2 * tol
+    return q, converged, pos_err
 
 
 def _selftest():

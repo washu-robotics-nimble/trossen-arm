@@ -136,6 +136,11 @@ def probe_contact(driver, plane, uv, target_dir, *,
 
         # signed rise on the loaded joint: contact pushes it one way and the
         # rise accumulates over the window; free-air noise stays bounded.
+        # Use the MAGNITUDE of the change: contact loads the watched joint in a
+        # direction that depends on board/arm geometry (it may be negative),
+        # while measured free-air noise on that joint stays well under the
+        # threshold, so |rise| catches contact of either sign without triggering
+        # on noise.
         rise = 0.0
         if len(history) > window:
             rise = float(effort[contact_joint] - history[-1 - window][contact_joint])
@@ -146,7 +151,7 @@ def probe_contact(driver, plane, uv, target_dir, *,
             print(f"  offset {offset*1000:+5.1f} mm  |  joint-{contact_joint} "
                   f"rise {rise:+.3f} Nm{flag}")
 
-        if gated and rise > threshold:
+        if gated and abs(rise) > threshold:
             consec += 1
             if consec >= confirm:
                 # detection lags first contact by ~half the window (the rise
@@ -154,7 +159,7 @@ def probe_contact(driver, plane, uv, target_dir, *,
                 contact_offset = offset + (window // 2) * step
                 if verbose:
                     print(f"  CONTACT near offset {contact_offset*1000:+.1f} mm "
-                          f"(joint-{contact_joint} rise {rise:+.3f} Nm > "
+                          f"(joint-{contact_joint} |rise| {abs(rise):.3f} Nm > "
                           f"{threshold} Nm, confirmed {confirm}x)")
                 move_to(hover, seed)   # lift off before returning
                 return contact_offset

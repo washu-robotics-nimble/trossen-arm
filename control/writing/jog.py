@@ -16,7 +16,7 @@ import tty
 
 import numpy as np
 
-from .kinematics import forward_kinematics, inverse_kinematics, JOINT_LIMITS
+from .kinematics import forward_kinematics, inverse_kinematics
 
 # key -> unit displacement of the tip in base frame (x, y, z)
 _MOVES = {
@@ -112,10 +112,15 @@ def jog_to_point(driver, q_start, tip_length, target_dir, label,
         if not ok:
             _status(f"\x07unreachable that way (residual {err*1000:.0f} mm) — try another axis")
             continue
-        if np.any(q_new <= JOINT_LIMITS[:, 0] + 1e-3) or np.any(q_new >= JOINT_LIMITS[:, 1] - 1e-3):
-            _status("\x07joint limit reached — try another axis")
+        # Reject only if the tip barely moves: when IK saturates against a
+        # joint limit the achieved motion is ~0, but jogging *away* from a
+        # limit still produces real tip motion, so the operator never gets
+        # locked out (the old proximity-to-limit test blocked valid moves too).
+        new_pos, _ = forward_kinematics(q_new, tip_length)
+        if np.linalg.norm(new_pos - pos) < 0.2 * step:
+            _status("\x07can't go further that way (joint limit) — try another axis")
             continue
 
         driver.set_arm_positions(q_new, move_time, True)
         q = q_new
-        pos, _ = forward_kinematics(q, tip_length)
+        pos = new_pos

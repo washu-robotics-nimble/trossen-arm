@@ -27,8 +27,10 @@ Usage:
 import argparse
 import json
 import os
+import queue
 import random
 import sys
+import threading
 import time
 
 import cv2
@@ -82,17 +84,44 @@ def _grab(cap_ref, reopen, retries=5):
     return None
 
 
-def _record_episode(driver, cap_ref, reopen, samples, task, episode_dir):
-    """Execute uniform-dt joint targets, capturing frame+state per step."""
+def _record_episode(driver, cap_ref, reopen, samples, task, episode_dir,
+                    max_misses=10):
+    """Execute uniform-dt joint targets, capturing frame+state per step.
+
+    PNG encoding runs on a background thread so disk I/O overlaps the blocking
+    arm move instead of stalling it between waypoints (which would make the
+    recorded demonstrations stutter).  On a camera miss the arm is NOT advanced
+    and the sample is retried, so no commanded motion ever goes unrecorded (a
+    gap would mislabel the action for that step as double-length).
+    """
     frames_dir = os.path.join(episode_dir, "frames")
     os.makedirs(frames_dir, exist_ok=True)
+
+    # background frame writer: enqueue (path, frame); the blocking move below
+    # then runs while the PNG encodes.
+    write_q = queue.Queue()
+
+    def _writer():
+        while True:
+            item = write_q.get()
+            if item is None:
+                break
+            path, img = item
+            cv2.imwrite(path, img)
+        # drain sentinel handled by loop break
+
+    wt = threading.Thread(target=_writer, daemon=True)
+    wt.start()
 
     states, frame_paths, timestamps = [], [], []
     dt = 1.0 / RECORD_HZ
     start = time.time()
     misses = 0
+    i = 0        # trajectory sample index (only advances on a captured frame)
+    rec = 0      # recorded-frame counter (contiguous filenames, 1:1 with states)
 
-    for idx, (q, _pen) in enumerate(samples):
+    while i < len(samples):
+        q = samples[i][0]
         t0 = time.time()
         # observation captured BEFORE the step is commanded (obs -> action)
         frame = _grab(cap_ref, reopen)
@@ -100,21 +129,31 @@ def _record_episode(driver, cap_ref, reopen, samples, task, episode_dir):
         if frame is None:
             misses += 1
             if misses <= 3:
-                print("  WARNING: camera read failed (retried+reopened), skipping frame.")
-            # still command the move so the arm doesn't stall mid-stroke
-            driver.set_arm_positions(np.asarray(q, dtype=np.float64), dt, True)
+                print("  WARNING: camera read failed (retried+reopened).")
+            if misses >= max_misses:
+                print(f"  Too many camera drops ({misses}) — discarding episode.")
+                write_q.put(None)
+                wt.join()
+                return 0
+            # do NOT advance the arm or index: retry this sample so no motion
+            # goes unrecorded (which would mislabel this step's action).
             continue
-        rel = f"frames/frame_{idx:04d}.png"
-        cv2.imwrite(os.path.join(episode_dir, rel), frame)
+        rel = f"frames/frame_{rec:04d}.png"
+        write_q.put((os.path.join(episode_dir, rel), frame))
         frame_paths.append(rel)
         states.append(state)
         timestamps.append(t0 - start)
+        rec += 1
 
         driver.set_arm_positions(np.asarray(q, dtype=np.float64), dt, True)
+        i += 1
+
+    write_q.put(None)   # flush: wait for all queued PNGs to finish
+    wt.join()
 
     n = len(states)
     if misses:
-        print(f"  ({misses} frames dropped to camera hiccups)")
+        print(f"  ({misses} camera hiccups retried)")
     if n < 2:
         print("  Episode too short — discarding.")
         return 0

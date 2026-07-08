@@ -78,8 +78,8 @@ def plan_strokes(
         surface_offset: measured offset (m) of the true writing surface along
             the board normal, relative to the calibrated plane (from a contact
             probe).  Positive = surface is nearer the robot than calibrated
-            (marker retracted).  All hover/pen-down heights shift by this so
-            writing tracks the real surface.
+            (marker protruding past the calibrated tip).  All hover/pen-down
+            heights shift by this so writing tracks the real surface.
 
     Returns:
         list[Waypoint].  Raises PlanningError if any point is off the board

@@ -30,6 +30,8 @@ import yaml
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 import trossen_arm
 
+from perception.utils.camera import open_camera
+
 RECORD_HZ = 10
 JOINT_NAMES = ["joint0", "joint1", "joint2", "joint3", "joint4", "joint5", "gripper"]
 _CONFIG_PATH = os.path.join(os.path.dirname(__file__), "../../config/robot_config.yaml")
@@ -42,28 +44,21 @@ def _load_config():
 
 def _init_robot(cfg):
     driver = trossen_arm.TrossenArmDriver()
+    # 4th arg is clear_error — clear any stale fault so idle/gravity-comp
+    # mode actually engages (an errored arm silently ignores mode commands).
     driver.configure(
         trossen_arm.Model.wxai_v0,
         trossen_arm.StandardEndEffector.wxai_v0_leader,
         cfg["robot"]["ip"],
-        cfg["robot"]["debug"],
+        True,
     )
     return driver
 
 
 def _init_camera(cfg):
-    cam = cfg["camera"]
-    backend_map = {
-        "AVFOUNDATION": cv2.CAP_AVFOUNDATION,
-        "DSHOW": cv2.CAP_DSHOW,
-        "V4L2": cv2.CAP_V4L2,
-    }
-    backend = backend_map.get(cam.get("backend", "AVFOUNDATION"), cv2.CAP_ANY)
-    cap = cv2.VideoCapture(cam["device_id"], backend)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, cam["width"])
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, cam["height"])
-    if not cap.isOpened():
-        raise RuntimeError("Could not open camera.")
+    # Use the shared robust opener (tolerates macOS index reordering / a
+    # camera that opens but delivers no frames) instead of a hand-rolled open.
+    cap, _idx = open_camera(cfg["camera"])
     return cap
 
 
@@ -99,9 +94,10 @@ def _record_episode(driver, cap, task: str, episode_dir: str, gripper_open: bool
         t0 = time.time()
 
         ret, frame = cap.read()
-        arm_pos = np.array(driver.get_positions()[:6], dtype=np.float32)
-        gripper_val = np.float32(1.0 if gripper_open else 0.0)
-        state = np.append(arm_pos, gripper_val)
+        # record the real 7-dim joint state (6 arm + gripper position), matching
+        # record_writing.py — a fabricated 0/1 gripper flag would be a different
+        # scale from record_writing's real gripper value and corrupt norm stats.
+        state = np.array(driver.get_positions()[:7], dtype=np.float32)
 
         if ret:
             rel_path = f"frames/frame_{idx:04d}.png"
