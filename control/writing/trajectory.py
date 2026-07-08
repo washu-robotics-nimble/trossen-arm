@@ -85,6 +85,14 @@ def plan_strokes(
         list[Waypoint].  Raises PlanningError if any point is off the board
         or IK fails to converge.
     """
+    if dt <= 0:
+        raise ValueError("dt must be > 0.")
+    if write_speed <= 0 or travel_speed <= 0:
+        raise ValueError("write_speed and travel_speed must be > 0.")
+    if hover < 0:
+        raise ValueError("hover must be >= 0.")
+    if margin < 0:
+        raise ValueError("margin must be >= 0.")
     for i, s in enumerate(strokes):
         for u, v in s:
             if not plane.contains(u, v, margin):
