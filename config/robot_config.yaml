@@ -7,7 +7,7 @@ robot:
 
 # Camera configuration
 camera:
-  device_id: 0
+  device_id: 0  # preferred index; scripts auto-resolve if macOS reorders it (see check_camera.py)
   width: 1280
   height: 720
   backend: "AVFOUNDATION"  # AVFOUNDATION (macOS), DSHOW (Windows), V4L2 (Linux)

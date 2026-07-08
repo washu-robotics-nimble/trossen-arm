@@ -1,5 +1,10 @@
-numpy==2.3.3
+numpy==1.26.4
 trossen_arm==1.7.8
 ultralytics>=8.0.0
 opencv-python>=4.8.0
 PyYAML>=6.0
+protobuf>=3.11,<4.0
+lerobot==0.3.3
+Pillow>=10.0.0
+Hershey-Fonts>=2.1.0
+matplotlib>=3.7.0
