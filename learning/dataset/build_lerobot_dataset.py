@@ -156,13 +156,16 @@ def main():
     print(f"\nDataset built: {len(ep_dirs)} episodes, {total_frames} frames.")
 
     if not args.skip_norm_stats:
-        print("\nComputing norm_stats.json…")
-        result = subprocess.run(
-            [sys.executable, _NORM_STATS_SCRIPT, "--dataset-path", args.repo_id],
-            capture_output=False,
-        )
-        if result.returncode != 0:
-            print("WARNING: norm_stats computation failed. Run compute_norm_stats.py manually before training.")
+        if not os.path.exists(_NORM_STATS_SCRIPT):
+            print(f"WARNING: norm_stats script not found at {_NORM_STATS_SCRIPT}; skipping.")
+        else:
+            print("\nComputing norm_stats.json…")
+            result = subprocess.run(
+                [sys.executable, _NORM_STATS_SCRIPT, "--dataset-path", args.repo_id],
+                capture_output=False,
+            )
+            if result.returncode != 0:
+                print("WARNING: norm_stats computation failed. Run compute_norm_stats.py manually before training.")
 
     if args.push:
         print(f"\nPushing to HuggingFace Hub: {args.repo_id}")
